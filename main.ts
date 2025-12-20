@@ -31,6 +31,15 @@ let GooBitLightValveVal = 400;
 
 // rgbLED pin DigitalPin.P11
 
+    /////////////////////// RGB LED ///////////////////////
+    let rgbLEDPin = DigitalPin.P11;
+    let rgbLEDBrightness = 255;
+    /////////////////////// RGB LED ///////////////////////
+
+    /////////////////////// Buzzer ///////////////////////
+    let buzzerPin = DigitalPin.P10;
+    /////////////////////// Buzzer ///////////////////////
+
 //% color="#fcb70a" weight=10 icon="\uf192"
 namespace GooBit {
 
@@ -201,6 +210,55 @@ namespace GooBit {
         TRightRotate = 5,
     }
 
+    export enum RGBLEDColorMode {
+        //% block="Single Color"
+        SingleColor = 0,
+        //% block="Rainbow"
+        Rainbow = 1,
+        //% block="Breathing"
+        Breathing = 2,
+        //% block="Flashing"
+        Flashing = 3,
+    }
+
+    export enum LEDColor {
+        //% block="Red"
+        Red = 0xFF0000,
+        //% block="Green"
+        Green = 0x00FF00,
+        //% block="Blue"
+        Blue = 0x0000FF,
+        //% block="White"
+        White = 0xFFFFFF,
+        //% block="Yellow"
+        Yellow = 0xFFFF00,
+        //% block="Cyan"
+        Cyan = 0x00FFFF,
+        //% block="Magenta"
+        Magenta = 0xFF00FF,
+        //% block="Off"
+        Off = 0x000000,
+    }
+
+    export enum BuzzerNote {
+        //% block="C"
+        C = 262,
+        //% block="D"
+        D = 294,
+        //% block="E"
+        E = 330,
+        //% block="F"
+        F = 349,
+        //% block="G"
+        G = 392,
+        //% block="A"
+        A = 440,
+        //% block="B"
+        B = 494,
+        //% block="C5"
+        C5 = 523,
+    }
+
     /////////////////////// DigitalTubes ///////////////////////
     let PINDIO = DigitalPin.P1;
     let PINCLK = DigitalPin.P2;
@@ -219,6 +277,92 @@ namespace GooBit {
     
     function clamp(value: number, min: number, max: number): number {
         return Math.max(Math.min(max, value), min);
+    }
+
+    /**
+     * Set RGB LED color
+     * @param color the color to set, eg: GooBit.LEDColor.Red
+     */
+    //% weight=85
+    //% blockId=GooBit_setRGBLED_color block="set RGB LED color to %color"
+    //% color.fieldEditor="gridpicker" color.fieldOptions.columns=4
+    export function setRGBLED_color(color: LEDColor): void {
+        pins.digitalWritePin(rgbLEDPin, 1);
+        pins.analogWritePin(rgbLEDPin, color as number);
+    }
+
+    /**
+     * Set RGB LED brightness
+     * @param brightness the brightness (0-255), eg: 128
+     */
+    //% weight=84
+    //% blockId=GooBit_setRGBLED_brightness block="set RGB LED brightness to %brightness"
+    //% brightness.min=0 brightness.max=255
+    export function setRGBLED_brightness(brightness: number): void {
+        rgbLEDBrightness = clamp(brightness, 0, 255);
+        pins.analogWritePin(rgbLEDPin, rgbLEDBrightness);
+    }
+
+    /**
+     * Turn off RGB LED
+     */
+    //% weight=83
+    //% blockId=GooBit_RGB_off block="turn off RGB LED"
+    export function RGB_off(): void {
+        pins.digitalWritePin(rgbLEDPin, 0);
+    }
+
+    /**
+     * Set RGB LED to custom color using RGB values
+     * @param red the red value (0-255), eg: 255
+     * @param green the green value (0-255), eg: 0
+     * @param blue the blue value (0-255), eg: 0
+     */
+    //% weight=82
+    //% blockId=GooBit_setRGBLED_RGB block="set RGB LED R %red|G %green|B %blue"
+    //% red.min=0 red.max=255
+    //% green.min=0 green.max=255
+    //% blue.min=0 blue.max=255
+    //% inlineInputMode=inline
+    export function setRGBLED_RGB(red: number, green: number, blue: number): void {
+        let color = ((clamp(red, 0, 255) << 16) | (clamp(green, 0, 255) << 8) | clamp(blue, 0, 255));
+        pins.digitalWritePin(rgbLEDPin, 1);
+        pins.analogWritePin(rgbLEDPin, color);
+    }
+
+    /**
+     * Play a tone on the buzzer
+     * @param frequency frequency in Hz, eg: 262
+     * @param duration duration in milliseconds, eg: 500
+     */
+    //% weight=81
+    //% blockId=GooBit_playTone block="play tone frequency %frequency|duration %duration ms"
+    //% frequency.min=20 frequency.max=20000
+    //% duration.min=0 duration.max=60000
+    //% inlineInputMode=inline
+    export function playTone(frequency: number, duration: number): void {
+        pins.tone(buzzerPin, frequency, duration);
+    }
+
+    /**
+     * Play a note on the buzzer
+     * @param note musical note, eg: GooBit.BuzzerNote.C
+     * @param duration duration in milliseconds, eg: 500
+     */
+    //% weight=80
+    //% blockId=GooBit_playNote block="play note %note|for %duration ms"
+    //% duration.min=0 duration.max=60000
+    export function playNote(note: BuzzerNote, duration: number): void {
+        pins.tone(buzzerPin, note as number, duration);
+    }
+
+    /**
+     * Stop buzzer
+     */
+    //% weight=79
+    //% blockId=GooBit_stopBuzzer block="stop buzzer"
+    export function stopBuzzer(): void {
+        pins.tone(buzzerPin, 0, 0);
     }
 
     /**
@@ -257,7 +401,7 @@ namespace GooBit {
      * Stop the GooBit motor.
      * @param motor motor m1/m2/all. eg: GooBit.Motors.MAll
      */
-    //% weight=89
+    //% weight=78
     //% blockId=GooBit_motorStop block="motor |%motor stop"
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=2 
     export function motorStop(motor: Motors): void {
@@ -265,11 +409,39 @@ namespace GooBit {
     }
 
     /**
+     * Stop all motors
+     */
+    //% weight=77
+    //% blockId=GooBit_stopAll block="stop all motors"
+    export function stopAll(): void {
+        motorStop(Motors.MAll);
+    }
+
+    /**
+     * Set motor speed for MA and MB separately
+     * @param speedA speed of motor MA (0 to 255), eg: 128
+     * @param directionA direction of motor MA, eg: GooBit.Dir.CW
+     * @param speedB speed of motor MB (0 to 255), eg: 128
+     * @param directionB direction of motor MB, eg: GooBit.Dir.CW
+     */
+    //% weight=76
+    //% blockId=GooBit_motorRunDual block="motor MA|%directionA|speed|%speedA| MB|%directionB|speed|%speedB"
+    //% speedA.min=0 speedA.max=255
+    //% speedB.min=0 speedB.max=255
+    //% directionA.fieldEditor="gridpicker" directionA.fieldOptions.columns=2
+    //% directionB.fieldEditor="gridpicker" directionB.fieldOptions.columns=2
+    //% inlineInputMode=inline
+    export function motorRunDual(directionA: Dir, speedA: number, directionB: Dir, speedB: number): void {
+        motorRun(Motors.MA, directionA, speedA);
+        motorRun(Motors.MB, directionB, speedB);
+    }
+
+    /**
      * Move GooBit with speed.
      * @param speed the speed from 0 (min) to 255 (max), eg:128
      * @param dir move direction, eg: GooBit.CarMoving.TForward
      */
-    //% weight=87
+    //% weight=75
     //% blockId=GooBit_Moving block="moving with speed %speed |%dir"
     //% speed.min=0 speed.max=255
     export function Moving(speed: number, dir:CarMoving): void {
@@ -295,12 +467,96 @@ namespace GooBit {
     }
 
     /**
+     * Move forward with specified speed
+     * @param speed speed (0 to 255), eg: 200
+     */
+    //% weight=74
+    //% blockId=GooBit_moveForward block="move forward at speed %speed"
+    //% speed.min=0 speed.max=255
+    export function moveForward(speed: number): void {
+        motorRun(Motors.MAll, Dir.CW, speed);
+    }
+
+    /**
+     * Move backward with specified speed
+     * @param speed speed (0 to 255), eg: 200
+     */
+    //% weight=73
+    //% blockId=GooBit_moveBackward block="move backward at speed %speed"
+    //% speed.min=0 speed.max=255
+    export function moveBackward(speed: number): void {
+        motorRun(Motors.MAll, Dir.CCW, speed);
+    }
+
+    /**
+     * Turn left with specified speed
+     * @param speed speed (0 to 255), eg: 150
+     */
+    //% weight=72
+    //% blockId=GooBit_turnLeft block="turn left at speed %speed"
+    //% speed.min=0 speed.max=255
+    export function turnLeft(speed: number): void {
+        motorRun(Motors.MA, Dir.CW, speed);
+        motorRun(Motors.MB, Dir.CCW, speed);
+    }
+
+    /**
+     * Turn right with specified speed
+     * @param speed speed (0 to 255), eg: 150
+     */
+    //% weight=71
+    //% blockId=GooBit_turnRight block="turn right at speed %speed"
+    //% speed.min=0 speed.max=255
+    export function turnRight(speed: number): void {
+        motorRun(Motors.MA, Dir.CCW, speed);
+        motorRun(Motors.MB, Dir.CW, speed);
+    }
+
+    /**
+     * Read analog value from pin
+     * @param pin analog pin to read, eg: AnalogPin.P0
+     */
+    //% weight=70
+    //% blockId=GooBit_readAnalog block="read analog pin %pin"
+    export function readAnalog(pin: AnalogPin): number {
+        return pins.analogReadPin(pin);
+    }
+
+    /**
+     * Read digital value from pin
+     * @param pin digital pin to read, eg: DigitalPin.P0
+     */
+    //% weight=69
+    //% blockId=GooBit_readDigital block="read digital pin %pin"
+    export function readDigital(pin: DigitalPin): number {
+        return pins.digitalReadPin(pin);
+    }
+
+    /**
+     * Get temperature in celsius
+     */
+    //% weight=68
+    //% blockId=GooBit_getTemperature block="temperature (°C)"
+    export function getTemperature(): number {
+        return input.temperature();
+    }
+
+    /**
+     * Get light level (0-255)
+     */
+    //% weight=67
+    //% blockId=GooBit_getLightLevel block="light level"
+    export function getLightLevel(): number {
+        return input.lightLevel();
+    }
+
+    /**
       * Enable or Disable line tracking sensor and set the line tracking sensor valve value.
       * @param enable line tracking sensor enable signal(0 or 1), eg: GooBit.TrackEnable.TrackOn
       * @param lightValve  line tracking sensor light valve value(0 ~ 511), eg: 400
       * @param darkValve line tracking sensor dark valve value(512 ~ 1023), eg: 600
       */
-    //% weight=79
+    //% weight=66
     //% blockId=GooBit_enableTrack_setValveValue block="%enable line tracking sensor and set valve value light |%lightValve| dark |%darkValve|"
     //% enable.fieldEditor="gridpicker" enable.fieldOptions.columns=2 
     //% lightValve.min=0 lightValve.max=511
@@ -316,7 +572,7 @@ namespace GooBit {
       * Read line tracking sensor.
       * @param trackNum track sensor number.
       */
-    //% weight=78
+    //% weight=65
     //% blockId=GooBit_readTrackSensor block="read %trackNum line tracking sensor"
     //% trackNum.fieldEditor="gridpicker" trackNum.fieldOptions.columns=3
     export function readTrackSensor(trackNum: Track): number {
@@ -338,7 +594,7 @@ namespace GooBit {
     //% blockId=GooBit_tracking block="Tracking state is %state"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=3
     //% state.fieldOptions.tooltips="false"
-    //% weight=76
+    //% weight=64
     export function tracking(state: TrackingState): boolean {
         let left_tracking = readTrackSensor(Track.TrackLeft);
         let middle_tracking = readTrackSensor(Track.TrackMiddle);
@@ -365,7 +621,7 @@ namespace GooBit {
     //% blockId=GooBit_trackSide block="%side line sensor %state"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=3
-    //% weight=74
+    //% weight=62
     export function trackSide(side: Track, state: MbEvents): boolean {
         let left_tracking = readTrackSensor(Track.TrackLeft);
         let middle_tracking = readTrackSensor(Track.TrackMiddle);
@@ -391,7 +647,7 @@ namespace GooBit {
      * Send a ping and get the echo time (in microseconds) as a result
      * @param maxCmDistance maximum distance in centimeters (default is 450)
      */
-    //% weight=60
+    //% weight=61
     //% blockId=GooBit_sonar_ping block="Ultrasonic unit:cm"
     //% inlineInputMode=inline
     export function ping(maxCmDistance = 450): number {
@@ -427,6 +683,49 @@ namespace GooBit {
         //     case PingUnit.Inches: return Math.idiv(distance_ult, 148);
         //     default: return Math.idiv(distance_ult, 2.54);
         // }
+    }
+    
+    /**
+     * Set servo angle on pin
+     * @param pin servo pin, eg: AnalogPin.P1
+     * @param angle servo angle (0-180), eg: 90
+     */
+    //% weight=60
+    //% blockId=GooBit_servoSetAngle block="set servo on pin %pin|angle %angle"
+    //% angle.min=0 angle.max=180
+    export function servoSetAngle(pin: AnalogPin, angle: number): void {
+        pins.servoWritePin(pin, clamp(angle, 0, 180));
+    }
+
+    /**
+     * Rotate servo gradually
+     * @param pin servo pin, eg: AnalogPin.P1
+     * @param startAngle starting angle (0-180), eg: 0
+     * @param endAngle ending angle (0-180), eg: 180
+     * @param delayMs delay between steps in milliseconds, eg: 10
+     */
+    //% weight=59
+    //% blockId=GooBit_servoRotate block="rotate servo on pin %pin|from %startAngle|to %endAngle|step %delayMs ms"
+    //% startAngle.min=0 startAngle.max=180
+    //% endAngle.min=0 endAngle.max=180
+    //% delayMs.min=1 delayMs.max=100
+    export function servoRotate(pin: AnalogPin, startAngle: number, endAngle: number, delayMs: number): void {
+        let angle = startAngle;
+        let step = endAngle > startAngle ? 1 : -1;
+        while ((step > 0 && angle <= endAngle) || (step < 0 && angle >= endAngle)) {
+            pins.servoWritePin(pin, angle);
+            basic.pause(delayMs);
+            angle += step;
+        }
+    }
+
+    /**
+     * Get battery voltage level
+     */
+    //% weight=58
+    //% blockId=GooBit_batteryVoltage block="battery voltage"
+    export function batteryVoltage(): number {
+        return pins.analogReadPin(AnalogPin.VREF);
     }
     
     /////////////////////// IR ///////////////////////
