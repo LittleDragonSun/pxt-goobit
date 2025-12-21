@@ -68,9 +68,9 @@ namespace GooBit {
     }
 
     export enum IrButtonAction {
-        //% block="pressed"
+        //% blockId="Pressed" block="pressed"
         Pressed = 0,
-        //% block="released"
+        //% blockId="Released" block="released"
         Released = 1,
     }
 
@@ -144,18 +144,18 @@ namespace GooBit {
     /////////////////////// IR ///////////////////////
 
     export enum Motors {
-        //% blockId="MRightMotor" block="MA"
+        //% blockId="leftMotor" block="left"
         MA = 0,
-        //% blockId="MLeftMotor" block="MB"
+        //% blockId="rightMotor" block="right"
         MB = 1,
-        //% blockId="AllMotors" block="All"
+        //% blockId="allMotors" block="all"
         MAll = 2
     }
 
     export enum Dir {
         //% blockId="CW" block="Forward"
         CW = 0x0,
-        //% blockId="CCW" block="Reverse"
+        //% blockId="CCW" block="Backward"
         CCW = 0x1
     }
 
@@ -283,6 +283,7 @@ namespace GooBit {
      * Set RGB LED color
      * @param color the color to set, eg: GooBit.LEDColor.Red
      */
+    //% group="RGB LED"
     //% weight=85
     //% blockId=GooBit_setRGBLED_color block="set RGB LED color to %color"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=4
@@ -295,6 +296,7 @@ namespace GooBit {
      * Set RGB LED brightness
      * @param brightness the brightness (0-255), eg: 128
      */
+    //% group="RGB LED"
     //% weight=84
     //% blockId=GooBit_setRGBLED_brightness block="set RGB LED brightness to %brightness"
     //% brightness.min=0 brightness.max=255
@@ -306,6 +308,7 @@ namespace GooBit {
     /**
      * Turn off RGB LED
      */
+    //% group="RGB LED"
     //% weight=83
     //% blockId=GooBit_RGB_off block="turn off RGB LED"
     export function RGB_off(): void {
@@ -318,6 +321,7 @@ namespace GooBit {
      * @param green the green value (0-255), eg: 0
      * @param blue the blue value (0-255), eg: 0
      */
+    //% group="RGB LED"
     //% weight=82
     //% blockId=GooBit_setRGBLED_RGB block="set RGB LED R %red|G %green|B %blue"
     //% red.min=0 red.max=255
@@ -335,6 +339,7 @@ namespace GooBit {
      * @param frequency frequency in Hz, eg: 262
      * @param duration duration in milliseconds, eg: 500
      */
+    //% group="Buzzer"
     //% weight=81
     //% blockId=GooBit_playTone block="play tone frequency %frequency|duration %duration ms"
     //% frequency.min=20 frequency.max=20000
@@ -349,6 +354,7 @@ namespace GooBit {
      * @param note musical note, eg: GooBit.BuzzerNote.C
      * @param duration duration in milliseconds, eg: 500
      */
+    //% group="Buzzer"
     //% weight=80
     //% blockId=GooBit_playNote block="play note %note|for %duration ms"
     //% duration.min=0 duration.max=60000
@@ -359,6 +365,7 @@ namespace GooBit {
     /**
      * Stop buzzer
      */
+    //% group="Buzzer"
     //% weight=79
     //% blockId=GooBit_stopBuzzer block="stop buzzer"
     export function stopBuzzer(): void {
@@ -371,10 +378,11 @@ namespace GooBit {
      * @param direction direction to turn. eg: GooBit.Dir.CW
      * @param speed speed of motors (0 to 255). eg: 120
      */
+    //% group="Motor control"
     //% weight=90
     //% blockId=GooBit_MotorRun block="motor|%index|move|%direction|at speed|%speed"
     //% speed.min=0 speed.max=255
-    //% index.fieldEditor="gridpicker" index.fieldOptions.columns=2
+    //% index.fieldEditor="gridpicker" index.fieldOptions.columns=3
     //% direction.fieldEditor="gridpicker" direction.fieldOptions.columns=2
     export function motorRun(index: Motors, direction: Dir, speed: number): void {
         if (index > 2 || index < 0)
@@ -401,9 +409,10 @@ namespace GooBit {
      * Stop the GooBit motor.
      * @param motor motor m1/m2/all. eg: GooBit.Motors.MAll
      */
-    //% weight=78
+    //% group="Motor control"
+    //% weight=89
     //% blockId=GooBit_motorStop block="motor |%motor stop"
-    //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=2 
+    //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=3 
     export function motorStop(motor: Motors): void {
         motorRun(motor, 0, 0);
     }
@@ -411,7 +420,8 @@ namespace GooBit {
     /**
      * Stop all motors
      */
-    //% weight=77
+    //% group="Motor control"
+    //% weight=88
     //% blockId=GooBit_stopAll block="stop all motors"
     export function stopAll(): void {
         motorStop(Motors.MAll);
@@ -424,7 +434,8 @@ namespace GooBit {
      * @param speedB speed of motor MB (0 to 255), eg: 128
      * @param directionB direction of motor MB, eg: GooBit.Dir.CW
      */
-    //% weight=76
+    //% group="Motor control"
+    //% weight=87
     //% blockId=GooBit_motorRunDual block="motor MA|%directionA|speed|%speedA| MB|%directionB|speed|%speedB"
     //% speedA.min=0 speedA.max=255
     //% speedB.min=0 speedB.max=255
@@ -441,7 +452,8 @@ namespace GooBit {
      * @param speed the speed from 0 (min) to 255 (max), eg:128
      * @param dir move direction, eg: GooBit.CarMoving.TForward
      */
-    //% weight=75
+    //% group="Motor control"
+    //% weight=86
     //% blockId=GooBit_Moving block="moving with speed %speed |%dir"
     //% speed.min=0 speed.max=255
     export function Moving(speed: number, dir:CarMoving): void {
@@ -470,7 +482,8 @@ namespace GooBit {
      * Move forward with specified speed
      * @param speed speed (0 to 255), eg: 200
      */
-    //% weight=74
+    //% group="Motor control"
+    //% weight=85
     //% blockId=GooBit_moveForward block="move forward at speed %speed"
     //% speed.min=0 speed.max=255
     export function moveForward(speed: number): void {
@@ -481,7 +494,8 @@ namespace GooBit {
      * Move backward with specified speed
      * @param speed speed (0 to 255), eg: 200
      */
-    //% weight=73
+    //% group="Motor control"
+    //% weight=84
     //% blockId=GooBit_moveBackward block="move backward at speed %speed"
     //% speed.min=0 speed.max=255
     export function moveBackward(speed: number): void {
@@ -492,7 +506,8 @@ namespace GooBit {
      * Turn left with specified speed
      * @param speed speed (0 to 255), eg: 150
      */
-    //% weight=72
+    //% group="Motor control"
+    //% weight=83
     //% blockId=GooBit_turnLeft block="turn left at speed %speed"
     //% speed.min=0 speed.max=255
     export function turnLeft(speed: number): void {
@@ -504,7 +519,8 @@ namespace GooBit {
      * Turn right with specified speed
      * @param speed speed (0 to 255), eg: 150
      */
-    //% weight=71
+    //% group="Motor control"
+    //% weight=82
     //% blockId=GooBit_turnRight block="turn right at speed %speed"
     //% speed.min=0 speed.max=255
     export function turnRight(speed: number): void {
@@ -516,6 +532,7 @@ namespace GooBit {
      * Read analog value from pin
      * @param pin analog pin to read, eg: AnalogPin.P0
      */
+    //% group="Basic"
     //% weight=70
     //% blockId=GooBit_readAnalog block="read analog pin %pin"
     export function readAnalog(pin: AnalogPin): number {
@@ -526,6 +543,7 @@ namespace GooBit {
      * Read digital value from pin
      * @param pin digital pin to read, eg: DigitalPin.P0
      */
+    //% group="Basic"
     //% weight=69
     //% blockId=GooBit_readDigital block="read digital pin %pin"
     export function readDigital(pin: DigitalPin): number {
@@ -535,6 +553,7 @@ namespace GooBit {
     /**
      * Get temperature in celsius
      */
+    //% group="Sensor"
     //% weight=68
     //% blockId=GooBit_getTemperature block="temperature (°C)"
     export function getTemperature(): number {
@@ -544,6 +563,7 @@ namespace GooBit {
     /**
      * Get light level (0-255)
      */
+    //% group="Sensor"
     //% weight=67
     //% blockId=GooBit_getLightLevel block="light level"
     export function getLightLevel(): number {
@@ -556,6 +576,7 @@ namespace GooBit {
       * @param lightValve  line tracking sensor light valve value(0 ~ 511), eg: 400
       * @param darkValve line tracking sensor dark valve value(512 ~ 1023), eg: 600
       */
+    //% group="LineFollow sensor"
     //% weight=66
     //% blockId=GooBit_enableTrack_setValveValue block="%enable line tracking sensor and set valve value light |%lightValve| dark |%darkValve|"
     //% enable.fieldEditor="gridpicker" enable.fieldOptions.columns=2 
@@ -572,6 +593,7 @@ namespace GooBit {
       * Read line tracking sensor.
       * @param trackNum track sensor number.
       */
+    //% group="LineFollow sensor"
     //% weight=65
     //% blockId=GooBit_readTrackSensor block="read %trackNum line tracking sensor"
     //% trackNum.fieldEditor="gridpicker" trackNum.fieldOptions.columns=3
@@ -591,6 +613,7 @@ namespace GooBit {
 	* Judging the Current Status of Tracking Module. 
 	* @param state Five states of tracking module, eg: GooBit.TrackingState.M_line_LR_unline
     */
+    //% group="LineFollow sensor"
     //% blockId=GooBit_tracking block="Tracking state is %state"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=3
     //% state.fieldOptions.tooltips="false"
@@ -618,6 +641,7 @@ namespace GooBit {
     * @param side Line sensor edge , eg: Track.TrackLeft
     * @param state Line sensor status, eg: MbEvents.FindLine
     */
+    //% group="LineFollow sensor"
     //% blockId=GooBit_trackSide block="%side line sensor %state"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=3
@@ -647,9 +671,9 @@ namespace GooBit {
      * Send a ping and get the echo time (in microseconds) as a result
      * @param maxCmDistance maximum distance in centimeters (default is 450)
      */
+    //% group="Sonar sensor"
     //% weight=61
-    //% blockId=GooBit_sonar_ping block="Ultrasonic unit:cm"
-    //% inlineInputMode=inline
+    //% blockId=GooBit_sonar_ping block="read ultrasonic sensor"
     export function ping(maxCmDistance = 450): number {
         let d
         // send pulse
@@ -690,6 +714,7 @@ namespace GooBit {
      * @param pin servo pin, eg: AnalogPin.P1
      * @param angle servo angle (0-180), eg: 90
      */
+    //% group="YFRobot Servo"
     //% weight=60
     //% blockId=GooBit_servoSetAngle block="set servo on pin %pin|angle %angle"
     //% angle.min=0 angle.max=180
@@ -704,6 +729,7 @@ namespace GooBit {
      * @param endAngle ending angle (0-180), eg: 180
      * @param delayMs delay between steps in milliseconds, eg: 10
      */
+    //% group="YFRobot Servo"
     //% weight=59
     //% blockId=GooBit_servoRotate block="rotate servo on pin %pin|from %startAngle|to %endAngle|step %delayMs ms"
     //% startAngle.min=0 startAngle.max=180
@@ -722,6 +748,7 @@ namespace GooBit {
     /**
      * Get battery voltage level
      */
+    //% group="Basic"
     //% weight=58
     //% blockId=GooBit_batteryVoltage block="battery voltage"
     export function batteryVoltage(): number {
@@ -804,9 +831,9 @@ namespace GooBit {
      * @param pin IR_Receiver pin. eg: DigitalPin.P5
      * @param protocol IR protocol. eg: GooBit.IrProtocol.NEC
      */
-    //% subcategory="IR_Receiver"
+    //% group="IR_Receiver"
     //% blockId="GooBit_infrared_connect_receiver"
-    //% block="connect IR_Receiver at pin %pin and decode %protocol"
+    //% block="connect IR receiver at pin %pin and decode %protocol"
     //% pin.fieldEditor="gridpicker"
     //% pin.fieldOptions.columns=4
     //% pin.fieldOptions.tooltips="false"
@@ -886,13 +913,12 @@ namespace GooBit {
      * @param action the trigger action
      * @param handler body code to run when event is raised
      */
-    //% subcategory="IR_Receiver"
+    //% group="IR_Receiver"
+    //% weight=13
     //% blockId=GooBit_infrared_on_ir_button
     //% block="on IR button | %button | %action"
-    //% button.fieldEditor="gridpicker"
-    //% button.fieldOptions.columns=3
+    //% button.fieldEditor="gridpicker" button.fieldOptions.columns=3
     //% button.fieldOptions.tooltips="false"
-    //% weight=13
     export function onIrButton(button: IrButton, action: IrButtonAction, handler: () => void) {
         control.onEvent(
             action === IrButtonAction.Pressed
@@ -909,7 +935,7 @@ namespace GooBit {
     /**
      * Returns the code of the IR button that was pressed last. Returns -1 (IrButton.Any) if no button has been pressed yet.
      */
-    //% subcategory="IR_Receiver"
+    //% group="IR_Receiver"
     //% blockId=GooBit_infrared_ir_button_pressed
     //% block="IR button"
     //% weight=10
@@ -923,7 +949,7 @@ namespace GooBit {
     /**
      * Returns true if any button was pressed since the last call of this function. False otherwise.
      */
-    //% subcategory="IR_Receiver"
+    //% group="IR_Receiver"
     //% blockId=GooBit_infrared_was_any_button_pressed
     //% block="any IR button was pressed"
     //% weight=7
@@ -943,10 +969,9 @@ namespace GooBit {
      * Returns the command code of a specific IR button.
      * @param button the button
      */
-    //% subcategory="IR_Receiver"
+    //% group="IR_Receiver"
     //% blockId=GooBit_infrared_button_code
-    //% button.fieldEditor="gridpicker"
-    //% button.fieldOptions.columns=3
+    //% button.fieldEditor="gridpicker" button.fieldOptions.columns=3
     //% button.fieldOptions.tooltips="false"
     //% block="IR button code %button"
     //% weight=5

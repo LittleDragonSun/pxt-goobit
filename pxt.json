@@ -1,15 +1,16 @@
 {
     "name": "GooBit",
-    "version": "0.0.1",
-    "description": "YFRobot MakeCode Extensions For Micro:bit",
+    "version": "0.0.2",
     "license": "MIT",
+    "description": "YFRobot MakeCode Extensions For Micro:bit",
     "dependencies": {
-        "core": "*",
-        "microphone": "*"
+        "core": "*"
     },
     "files": [
-        "main.ts",
         "README.md",
+        "main.ts",
+        "_locales/GooBit-strings.json",
+        "_locales/GooBit-jsdoc-strings.json",
         "_locales/zh-cn/GooBit-strings.json",
         "_locales/zh-cn/GooBit-jsdoc-strings.json",
         "_locales/zh-tw/GooBit-strings.json",
@@ -19,6 +20,10 @@
         "test.ts"
     ],
     "public": true,
+    "targetVersions": {
+        "target": "6.0.28",
+        "targetId": "microbit"
+    },
     "supportedTargets": [
         "microbit"
     ],
