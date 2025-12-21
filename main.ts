@@ -56,8 +56,8 @@ namespace GooBit {
         protocol: IrProtocol;
         command: number;
         hasNewCommand: boolean;
-        bitsReceived: uint8;
-        commandBits: uint8;
+        bitsReceived: number;
+        commandBits: number;
     }
 
     export enum IrProtocol {
@@ -190,9 +190,9 @@ namespace GooBit {
     /** Line Sensor events    MICROBIT_PIN_EVT_RISE **/
     export enum MbEvents {
         //% block="Found" 
-        FindLine = DAL.MICROBIT_PIN_EVT_FALL,
+        FindLine = 3,
         //% block="Lost" 
-        LoseLine = DAL.MICROBIT_PIN_EVT_RISE
+        LoseLine = 2
     }
     
     export enum CarMoving {
@@ -288,8 +288,13 @@ namespace GooBit {
     //% blockId=GooBit_setRGBLED_color block="set RGB LED color to %color"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=4
     export function setRGBLED_color(color: LEDColor): void {
-        pins.digitalWritePin(rgbLEDPin, 1);
-        pins.analogWritePin(rgbLEDPin, color as number);
+        // Note: This is a simplified implementation for basic LED control
+        // For WS2812 RGB LEDs, use the neopixel extension instead
+        if (color == LEDColor.Off) {
+            pins.digitalWritePin(rgbLEDPin, 0);
+        } else {
+            pins.digitalWritePin(rgbLEDPin, 1);
+        }
     }
 
     /**
@@ -302,7 +307,13 @@ namespace GooBit {
     //% brightness.min=0 brightness.max=255
     export function setRGBLED_brightness(brightness: number): void {
         rgbLEDBrightness = clamp(brightness, 0, 255);
-        pins.analogWritePin(rgbLEDPin, rgbLEDBrightness);
+        // Note: For WS2812 RGB LEDs, use the neopixel extension instead
+        // This is a simplified implementation
+        if (rgbLEDBrightness > 0) {
+            pins.digitalWritePin(rgbLEDPin, 1);
+        } else {
+            pins.digitalWritePin(rgbLEDPin, 0);
+        }
     }
 
     /**
@@ -329,9 +340,14 @@ namespace GooBit {
     //% blue.min=0 blue.max=255
     //% inlineInputMode=inline
     export function setRGBLED_RGB(red: number, green: number, blue: number): void {
+        // Note: This is a simplified implementation for basic LED control
+        // For WS2812 RGB LEDs, use the neopixel extension instead
         let color = ((clamp(red, 0, 255) << 16) | (clamp(green, 0, 255) << 8) | clamp(blue, 0, 255));
-        pins.digitalWritePin(rgbLEDPin, 1);
-        pins.analogWritePin(rgbLEDPin, color);
+        if (color == 0) {
+            pins.digitalWritePin(rgbLEDPin, 0);
+        } else {
+            pins.digitalWritePin(rgbLEDPin, 1);
+        }
     }
 
     /**

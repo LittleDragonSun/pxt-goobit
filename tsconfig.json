@@ -4,5 +4,9 @@
         "noImplicitAny": true,
         "outDir": "built",
         "rootDir": "."
-    }
+    },
+    "include": [
+        "*.ts",
+        "*.d.ts"
+    ]
 }
